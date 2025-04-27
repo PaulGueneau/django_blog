@@ -25,6 +25,7 @@ def blog_category(request, category):
     }
     return render(request, "blogapp/category.html", context)
 
+
 #Equivalent to a GET request to all the posts in the blog
 def blog_index(request):
     posts = Post.objects.all().order_by("-created_at") # Fetch all posts and order them by creation date in descending order
@@ -54,46 +55,50 @@ def blog_detail(request, post_id):
     }
     return render(request, "blogapp/detail.html", context)
 
-#Equivalent to a POST request to /blog/create/
-# This view handles the creation of a new blog post
-def blog_create(request):
-    if request.method == "POST":
-        # Get the title and content from the POST request
-        title = request.POST.get("title")
-        content = request.POST.get("content")
-        # Create a new post with the provided title and content
-        post = Post.objects.create(title=title, content=content)
-        # Redirect to the detail view of the newly created post
-        return redirect("blog_detail", post_id=post.id)
+    # View to handle posts by author
+def blog_author(request, author_name):
+    author = Author.objects.get(name=author_name)  
+    posts = Post.objects.filter(authors=author).order_by("-created_at")  
+    context = {
+        "author": author,
+        "posts": posts,
+        }
+    return render(request, "blogapp/author.html", context)
 
-# Equivalent to a PUT request to /blog/update/<post_id>/
-# def blog_update(request, post_id):
-#     # Fetch the post with the given ID
-#     post = Post.objects.get(id=post_id)
-#     if request.method == "PUT":
-#         # Get the updated title and content from the PUT request
-#         title = request.POST.get("title")
-#         content = request.POST.get("content")
-#         # Update the post's title and content
-#         post.title = title
-#         post.content = content
-#         # Save the updated post to the database
-#         post.save()
-#         # Redirect to the detail view of the updated post
-#         return redirect("blog_detail", post_id=post.id)
-#     # Pass the post to the update template for rendering
-#     context = {
-#         "post": post,
-#     }
-#     return render(request, "blog/update.html", context)
+def blog_authors(request):
+    authors = Author.objects.all()  # Fetch all authors from the database
+    context = {
+        "authors": authors,
+    }
+    return render(request, "blogapp/authors.html", context)
+    
+
+    # View to handle posts by specific tag
+def blog_tag(request, tag):
+    tag_obj = Tag.objects.get(name=tag)  # Fetch the tag with the given name
+    posts = Post.objects.filter(tags=tag).order_by("-created_at")  # Fetch all posts with the tag
+    context = {
+        "tag": tag_obj,
+        "posts": posts,
+    }
+    return render(request, "blogapp/tag.html", context)
+    
+# View to handle all tags
+def blog_tags(request):
+    tags = Tag.objects.all()  # Fetch all tags from the database
+    context = {
+        "tags": tags,
+    }
+    return render(request, "blogapp/tags.html", context)
 
 
-# def blog_delete(request, post_id):
-#     post = Post.objects.get(id=post_id) # Fetch the post with the given ID
-#     if request.method == "DELETE":
-#         post.delete() # Delete the post
-#         return redirect("blog_index") # Redirect to the index view
-#     context = {
-#         "post": post,
-#     }
-#     return render(request, "blog/delete.html", context)
+
+    # View to handle search functionality
+def blog_search(request):
+    query = request.GET.get("q", "")  # Get the search query from the request
+    posts = Post.objects.filter(title__icontains=query).order_by("-created_at") if query else []  # Search posts by title
+    context = {
+        "query": query,
+        "posts": posts,
+        }
+    return render(request, "blogapp/search.html", context)

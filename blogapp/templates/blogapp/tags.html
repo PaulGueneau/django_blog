@@ -1,0 +1,18 @@
+
+
+<!--  blog/templates/blog/tags.html -->
+
+{% extends "base.html" %}
+
+{% block page_title %}
+    <h2>List of tags</h2>
+{% endblock page_title %}
+
+
+{% block page_content %}
+    {% block posts %}
+        {% for tag in tags %}
+            <h3><a href="{% url 'blog_tag' tag.name %}">{{ tag.name }}</a></h3>
+        {% endfor %}
+    {% endblock posts %}
+{% endblock page_content %}

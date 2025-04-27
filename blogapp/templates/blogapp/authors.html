@@ -1,0 +1,31 @@
+<!--  blog/templates/blog/authors.html -->
+
+{% extends "blogapp/index.html" %}
+
+
+{% block page_title %}
+    <h2>Authors</h2>
+{% endblock page_title %}
+
+{% block title %}
+    <h2>Authors</h2>
+{% endblock title %}
+
+
+
+{% block page_content %}
+    {% block posts %}
+        {% for author in authors %}
+            <h3><a href="{% url 'blog_author' author.id %}">{{ author.name }}</a></h3>
+            <small>
+                {{ author.created_at.date }} | Categories:
+                {% for category in author.categories.all %}
+                    <a href="{% url 'blog_category' category.name %}">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </small>
+            <p>{{ author.body | slice:":400" }}...</p>
+        {% endfor %}
+    {% endblock posts %}
+{% endblock page_content %}

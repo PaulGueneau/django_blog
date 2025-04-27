@@ -1,5 +1,5 @@
 from django.contrib import admin
-from blogapp.models import Category, Post, Comment, Author
+from blogapp.models import Category, Post, Comment, Author, Tag
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
@@ -32,8 +32,15 @@ class AuthorAdmin(admin.ModelAdmin):
     fields = ('name', 'email', 'bio', 'posts')
 
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    search_fields = ('name',)
+    list_filter = ('name',)
+    raw_id_fields = ('posts',)
+    fields = ('name',)
+
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Author, AuthorAdmin)
-
+admin.site.register(Tag, TagAdmin)

@@ -2,6 +2,15 @@
 
 {% extends "blogapp/index.html" %}
 
+
 {% block page_title %}
-<h2>{{ categories }}</h2>
+    <h2>Categories</h2>
 {% endblock page_title %}
+
+{% block page_content %}
+    {% block posts %}
+        {% for category in categories %}
+            <h3><a href="{% url 'blog_category' category.name %}">{{ category.name }}</a></h3>
+        {% endfor %}
+    {% endblock posts %}
+{% endblock page_content %}

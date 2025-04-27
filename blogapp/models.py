@@ -44,3 +44,8 @@ class Author(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=30)
     posts = models.ManyToManyField(Post, related_name='tags')
+    class Meta:
+        verbose_name_plural = "tags"
+    
+    def __str__(self):
+        return self.name
