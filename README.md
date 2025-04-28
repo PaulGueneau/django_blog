@@ -1,4 +1,4 @@
-## A full-featured blog application built with Django that allows users to create, edit, and interact with blog posts.
+## A featured blog application built with Django that allows users to create, edit, and interact with blog posts.
 
 *Features* 
 
