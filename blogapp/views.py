@@ -2,6 +2,7 @@ from django.shortcuts import render
 from blogapp.models import Post, Comment, Author, Category, Tag
 from blogapp.forms import CommentForm
 from django.http import HttpResponseRedirect
+from django.db.models import Q  # Import Q for complex queries
 # Create your views here.
 
 
@@ -28,9 +29,14 @@ def blog_category(request, category):
 
 #Equivalent to a GET request to all the posts in the blog
 def blog_index(request):
-    posts = Post.objects.all().order_by("-created_at") # Fetch all posts and order them by creation date in descending order
+    query = request.GET.get("q")  # Get the search query from the request
+    if query:
+        posts = Post.objects.filter(title__icontains=query).order_by("-created_at")  # Filter posts by title containing the query
+    else:
+        posts = Post.objects.all().order_by("-created_at")  # Fetch all posts if no query is provided
     context = {
         "posts": posts,
+        "query": query,  # Pass the query back to the template to display in the search bar
     }
     return render(request, "blogapp/index.html", context)
 
@@ -96,7 +102,7 @@ def blog_tags(request):
     # View to handle search functionality
 def blog_search(request):
     query = request.GET.get("q", "")  # Get the search query from the request
-    posts = Post.objects.filter(title__icontains=query).order_by("-created_at") if query else []  # Search posts by title
+    posts = Post.objects.filter(Q(title__icontains=query) | Q(content__icontains=query)).order_by("-created_at") if query else []  # Search posts by title or content
     context = {
         "query": query,
         "posts": posts,
